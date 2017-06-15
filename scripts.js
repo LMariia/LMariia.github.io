@@ -12,7 +12,7 @@ function getUsers() {
         request.onreadystatechange = function () {
             if (request.readyState === 4) {
                 if (request.status === 200) {
-                    addRecords(JSON.parse(request.responseText));
+                    addUsersList(JSON.parse(request.responseText));
                 } else {
                     alert('Request error');
                 }
@@ -26,27 +26,31 @@ function getUsers() {
     }
 }
 
-function addRecords(users) {
+function addUsersList(users) {
     users.forEach(function(user){
-        var tr = document.createElement('tr');
-        var trDetails = document.createElement('tr');
+        var userBlock = document.createElement('tr');
+        var detailsBlock = document.createElement('tr');
+        detailsBlock.className += 'hide';
 
-        tr.className += 'user';
-        tr.addEventListener('click', showDetails);
-        trDetails.className += 'hide';
+        // userBlock.className += 'user';
 
-        tr.appendChild( createRow('img', {src: user.avatar_url}) );
-        tr.appendChild( createRow('a', {href: user.url}, user.login) );
-        tr.appendChild( createRow('span', {}, user.site_admin) );
+        userBlock.appendChild( createRow('img', {src: user.avatar_url}) );
+        userBlock.appendChild( createRow('a', {href: user.html_url}, user.login) );
+        userBlock.appendChild( createRow('span', {}, user.site_admin) );
 
-        table[0].appendChild(tr);
-        table[0].appendChild(trDetails);
+        userBlock.addEventListener('click', function(){
+            showDetails(this, user.url);
+        });
+
+        table[0].appendChild(userBlock);
+        table[0].appendChild(detailsBlock);
     });
 }
 
 function createRow(tagName, attrs, text) {
     var td = document.createElement('td');
-    td.appendChild(createEl(tagName, attrs, text));
+
+    td.appendChild( createEl(tagName, attrs, text) );
 
     return td;
 };
@@ -55,6 +59,7 @@ function createEl(tagName, attrs, text) {
     var el = document.createElement(tagName);
 
     Object.assign(el, attrs);
+
     if (arguments.length == 3) {
         el.innerText = text;
     }
@@ -62,8 +67,49 @@ function createEl(tagName, attrs, text) {
     return el;
 }
 
-function showDetails(){
-    this.classList.toggle('user-selected');
-    this.nextSibling.classList.toggle('hide');
+function showDetails(userBlock, userUrl){
+    var detailsBlock = userBlock.nextSibling;
+    var user;
+
+    userBlock.classList.toggle('user-selected');
+    detailsBlock.classList.toggle('hide');
+
+    if ( detailsBlock.innerHTML === "" ) {
+        getUser(userUrl, function (user) {
+            var links = document.createElement('td');
+
+            links.className += ' links';
+
+            links.appendChild( createEl('a', {href: user.followers_url}, 'Followers') );
+            links.appendChild( createEl('a', {href: user.following_url}, 'Followings') );
+            links.appendChild( createEl('a', {href: user.starred_url}, 'Starred') );
+            links.appendChild( createEl('a', {href: user.subscriptions_url}, 'Subscriptions') );
+            links.appendChild( createEl('a', {href: user.organizations_url}, 'Organizations') );
+            links.appendChild( createEl('a', {href: user.repos_url}, 'Repos') );
+
+            detailsBlock.appendChild( user.name ? createRow('span', {}, user.name) : createRow('span', {}, '(no name)'));
+            detailsBlock.appendChild( user.email ? createRow('span', {}, user.email) : createRow('span', {}, '(no email)') );
+            detailsBlock.appendChild( links );
+        });
+    }
+}
+
+function getUser(userUrl, callback) {
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                if (typeof callback == "function") {
+                    callback(JSON.parse(request.responseText));
+                }
+            } else {
+                alert('Request error');
+            }
+        }
+    }
+
+    request.open('Get', userUrl);
+    request.send();
 }
 
