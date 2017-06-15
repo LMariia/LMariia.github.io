@@ -33,7 +33,7 @@ function addUsersList(users) {
         detailsBlock.className += 'hide';
 
         userBlock.appendChild( createRow('img', {src: user.avatar_url}) );
-        userBlock.appendChild( createRow('a', {href: user.html_url}, user.login) );
+        userBlock.appendChild( createRow('a', {href: user.html_url, onclick: function () { event.stopPropagation(); }}, user.login) );
         userBlock.appendChild( createRow('span', {}, user.site_admin) );
 
         userBlock.addEventListener('click', function(){
