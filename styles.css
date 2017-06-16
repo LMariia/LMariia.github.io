@@ -19,3 +19,7 @@ img{
 .links a {
     display: block;
 }
+
+.btn {
+    margin-bottom: 40px;
+}

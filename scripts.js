@@ -1,9 +1,11 @@
 var table = document.getElementsByTagName('tbody');
-var loadUsers = getUsers();
+var loadUsers = getUsers(function (users) {
+    renderUsers(users);
+});
 
 loadUsers();
 
-function getUsers() {
+function getUsers(callback) {
     var since = 0 ;
 
     return function() {
@@ -12,7 +14,9 @@ function getUsers() {
         request.onreadystatechange = function () {
             if (request.readyState === 4) {
                 if (request.status === 200) {
-                    addUsersList(JSON.parse(request.responseText));
+                    if (typeof callback == "function") {
+                        callback(JSON.parse(request.responseText));
+                    }
                 } else {
                     alert('Request error');
                 }
@@ -26,7 +30,7 @@ function getUsers() {
     }
 }
 
-function addUsersList(users) {
+function renderUsers(users) {
     users.forEach(function(user){
         var userBlock = document.createElement('tr');
         var detailsBlock = document.createElement('tr');
@@ -75,18 +79,21 @@ function showDetails(userBlock, userUrl){
     if ( detailsBlock.innerHTML === "" ) {
         getUser(userUrl, function (user) {
             var links = document.createElement('td');
+            var fragment = document.createDocumentFragment();
 
             links.className += ' links';
 
-            links.appendChild( createEl('a', {href: user.followers_url}, 'Followers') );
-            links.appendChild( createEl('a', {href: user.following_url}, 'Followings') );
-            links.appendChild( createEl('a', {href: user.starred_url}, 'Starred') );
-            links.appendChild( createEl('a', {href: user.subscriptions_url}, 'Subscriptions') );
-            links.appendChild( createEl('a', {href: user.organizations_url}, 'Organizations') );
-            links.appendChild( createEl('a', {href: user.repos_url}, 'Repos') );
+            fragment.appendChild( createEl('a', {href: user.followers_url}, 'Followers') );
+            fragment.appendChild( createEl('a', {href: user.following_url}, 'Followings') );
+            fragment.appendChild( createEl('a', {href: user.starred_url}, 'Starred') );
+            fragment.appendChild( createEl('a', {href: user.subscriptions_url}, 'Subscriptions') );
+            fragment.appendChild( createEl('a', {href: user.organizations_url}, 'Organizations') );
+            fragment.appendChild( createEl('a', {href: user.repos_url}, 'Repos') );
 
-            detailsBlock.appendChild( user.name ? createRow('span', {}, user.name) : createRow('span', {}, '(no name)'));
-            detailsBlock.appendChild( user.email ? createRow('span', {}, user.email) : createRow('span', {}, '(no email)') );
+            links.appendChild( fragment );
+
+            detailsBlock.appendChild( createRow('span', {}, user.name || '(no name)'));
+            detailsBlock.appendChild( createRow('span', {}, user.email || '(no email)'));
             detailsBlock.appendChild( links );
         });
     }
