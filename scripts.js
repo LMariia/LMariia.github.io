@@ -1,25 +1,30 @@
 var table = document.getElementsByTagName('tbody');
 
+var getUser = function (userUrl, callback) {
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                if (typeof callback === 'function') {
+                    callback(JSON.parse(request.responseText));
+                }
+            } else {
+                alert('Request error');
+            }
+        }
+    }
+
+    request.open('Get', userUrl);
+    request.send();
+}
+
 var getUsers = function (callback) {
     var since = 0;
 
     return function () {
-        var request = new XMLHttpRequest();
-
-        request.onreadystatechange = function () {
-            if (request.readyState === 4) {
-                if (request.status === 200) {
-                    if (typeof callback === 'function') {
-                        callback(JSON.parse(request.responseText));
-                    }
-                } else {
-                    alert('Request error');
-                }
-            }
-        }
-
-        request.open('Get', 'https://api.github.com/users?since=' + since);
-        request.send();
+        var url = 'https://api.github.com/users?since=' + since;
+        getUser(url, callback);
 
         since += 31;
     };
@@ -43,25 +48,6 @@ var createRow = function (tagName, attrs, text) {
     td.appendChild(createEl(tagName, attrs, text));
 
     return td;
-}
-
-var getUser = function (userUrl, callback) {
-    var request = new XMLHttpRequest();
-
-    request.onreadystatechange = function () {
-        if (request.readyState === 4) {
-            if (request.status === 200) {
-                if (typeof callback === 'function') {
-                    callback(JSON.parse(request.responseText));
-                }
-            } else {
-                alert('Request error');
-            }
-        }
-    }
-
-    request.open('Get', userUrl);
-    request.send();
 }
 
 var showDetails = function (userBlock, userUrl) {
@@ -103,7 +89,7 @@ var renderUsers = function (users) {
         userBlock.appendChild(createRow('a', { href: user.html_url, onclick: function () { event.stopPropagation(); } }, user.login));
         userBlock.appendChild(createRow('span', {}, user.site_admin));
 
-        userBlock.addEventListener('click', function(){
+        userBlock.addEventListener('click', function () {
             showDetails(this, user.url);
         });
 
