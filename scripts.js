@@ -57,11 +57,13 @@ var showDetails = function (userBlock, userUrl) {
     detailsBlock.classList.toggle('hide');
 
     if (detailsBlock.innerHTML === '') {
+        userBlock.classList.add('disabled');
         getUser(userUrl, function (user) {
             var links = document.createElement('td');
             var fragment = document.createDocumentFragment();
 
-            links.className += ' links';
+            userBlock.classList.remove('disabled');
+            links.classList.add('links');
 
             fragment.appendChild(createEl('a', { href: user.followers_url }, 'Followers'));
             fragment.appendChild(createEl('a', { href: user.following_url }, 'Followings'));
@@ -83,7 +85,7 @@ var renderUsers = function (users) {
     users.forEach(function (user) {
         var userBlock = document.createElement('tr');
         var detailsBlock = document.createElement('tr');
-        detailsBlock.className += 'hide';
+        detailsBlock.classList.add('hide');
 
         userBlock.appendChild(createRow('img', { src: user.avatar_url }));
         userBlock.appendChild(createRow('a', { href: user.html_url, onclick: function () { event.stopPropagation(); } }, user.login));
