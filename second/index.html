@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous">
+    <link href="styles.css" rel="stylesheet">
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="scripts.js"></script>
+    <title>Users</title>
+</head>
+<body>
+<div class="container" id="table">
+    <!--<table id="table" class="table table-condensed">-->
+        <!--<thead>-->
+        <!--<tr>-->
+            <!--<th class="col-xs-4">Avatar</th>-->
+            <!--<th class="col-xs-3">Login</th>-->
+            <!--<th class="col-xs-5">isAdmin</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+        <!--</tbody>-->
+    <!--</table>-->
+    <div class="row">
+        <div class="col-xs-4">Avatar</div>
+        <div class="col-xs-3">Login</div>
+        <div class="col-xs-5">isAdmin</div>
+    </div>
+    <template id="user_tmp">
+        <div class="row user">
+            <div class="col-xs-4">
+                <img src="" alt="">
+            </div>
+            <div class="col-xs-3">
+                <a id="link" href=""></a>
+            </div>
+            <div class="col-xs-5">
+                <span id="span"></span>
+            </div>
+        </div>
+        <div class="row user-detailed collapse">
+            <div class="col-xs-4 cell"></div>
+            <div class="col-xs-3 cell"></div>
+            <div class="col-xs-5 cell links">
+                <ul>
+                    <li><a href=""> Followers </a></li>
+                    <li><a href=""> Followings </a></li>
+                    <li><a href=""> Starred </a></li>
+                    <li><a href=""> Subscriptions </a></li>
+                    <li><a href=""> Organizations </a></li>
+                    <li><a href=""> Repos </a></li>
+                </ul>
+            </div>
+        </div>
+    </template>
+</div>
+<div class="row">
+    <button type="button" class="btn btn-success center-block" id="load_more">Load More</button>
+</div>
+</body>
+</html>

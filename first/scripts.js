@@ -105,4 +105,3 @@ var loadUsers = getUsers(function (users) {
 });
 
 loadUsers();
-
