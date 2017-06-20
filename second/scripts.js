@@ -1,4 +1,16 @@
 $(document).ready(function () {
+    var USERS_URL = 'https://api.github.com/users?since=';
+    var USER_URL = 'https://api.github.com/users/';
+    var USER_PER_PAGE = 30;
+    var LINK_LIST = [
+        'followers_url',
+        'following_url',
+        'starred_url',
+        'subscriptions_url',
+        'organizations_url',
+        'repos_url',
+    ];
+
     var table = $('#table');
 
     var getUser = function (userUrl, callback) {
@@ -21,16 +33,16 @@ $(document).ready(function () {
         var since = 0;
 
         return function () {
-            var url = 'https://api.github.com/users?since=' + since;
+            var url = USERS_URL + since;
             getUser(url, callback);
 
-            since += 31;
+            since += USER_PER_PAGE;
         };
     }
 
     var showDetails = function (userBlock) {
         var detailsBlock = $(userBlock).next();
-        var userUrl = 'https://api.github.com/users/' + $(userBlock).find('a').text();
+        var userUrl = USER_URL + $(userBlock).find('a').text();
         var name = $(detailsBlock.find('.cell'))[0];
         var email = $(detailsBlock.find('.cell'))[1];
         var links = detailsBlock.find('li a');
@@ -43,36 +55,35 @@ $(document).ready(function () {
                 $(userBlock).removeClass('disabled');
                 $(name).text(user.name || '(no name)');
                 $(email).text(user.email || '(no email)');
-                $(links[0]).attr({ 'href': user.followers_url });
-                $(links[1]).attr({ 'href': user.following_url });
-                $(links[2]).attr({ 'href': user.starred_url });
-                $(links[3]).attr({ 'href': user.subscriptions_url });
-                $(links[4]).attr({ 'href': user.organizations_url });
-                $(links[5]).attr({ 'href': user.repos_url });
+                for (i = 0; i < LINK_LIST.length; i++) {
+                    $(links[i]).attr('href', user[LINK_LIST[i]]);
+                }
             });
         }
     }
 
     var renderUsers = function (users) {
         var template = $('#user_tmp')[0];
-        var img = $(template.content.querySelector('.user img'));
+        var avatar = $(template.content.querySelector('.user img'));
         var login = $(template.content.querySelector('.user a'));
         var isAdmin = $(template.content.querySelector('.user span'));
 
         users.forEach(function (user) {
-            img.attr({ 'src': user.avatar_url });
-            login.text(user.login).attr({ href: user.html_url });
+            avatar.attr('src', user.avatar_url);
+            login.text(user.login).attr('href', user.html_url);
             isAdmin.text(user.site_admin);
             table.append($(template).html());
         });
-    }
-    //onclick: function () { event.stopPropagation(); }
-
-    var loadUsers = getUsers(function (users) {
-        renderUsers(users);
         $('.user').on('click', function () {
             showDetails(this);
         });
+        $('.user a').on('click', function (event) {
+            event.stopPropagation();
+        });
+    }
+
+    var loadUsers = getUsers(function (users) {
+        renderUsers(users);
     });
 
     loadUsers();
