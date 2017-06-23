@@ -1,5 +1,4 @@
-const USERS_URL = 'https://api.github.com/users?since=';
-const USER_URL = 'https://api.github.com/users/';
+const USERS_URL = 'https://api.github.com/users';
 const USER_PER_PAGE = 30;
 const LINK_LIST = [
     'followers_url',
@@ -12,16 +11,17 @@ const LINK_LIST = [
 
 let table = document.getElementById('table');
 
-let getUser = function (url) {
+let getUser = function (url, params) {
     return new Promise(function (resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('GET', url + (params || ''), true);
 
         xhr.onload = function () {
             if (this.status === 200) {
                 resolve(JSON.parse(this.response));
             } else {
-                var error = new Error(this.statusText);
+                let error = new Error(this.statusText);
                 error.code = this.status;
                 reject(error);
             }
@@ -35,18 +35,17 @@ let getUser = function (url) {
     });
 }
 
-var showDetails = function (userHeader, detailsBlock, userUrl) {
-    var name = detailsBlock.querySelectorAll('.cell')[0];
-    var email = detailsBlock.querySelectorAll('.cell')[1];
-    var links = detailsBlock.querySelectorAll('li a');
+let showDetails = function (userHeader, detailsBlock, userUrl) {
+    let name = detailsBlock.querySelectorAll('.cell')[0];
+    let email = detailsBlock.querySelectorAll('.cell')[1];
+    let links = detailsBlock.querySelectorAll('li a');
 
     userHeader.classList.toggle('user-selected');
     detailsBlock.classList.toggle('hide');
     if (!name.textContent) {
         userHeader.classList.add('disabled');
         getUser(userUrl).then(
-            (response) => {
-                var user = response;
+            (user) => {
                 userHeader.classList.remove('disabled');
                 name.textContent = user.name || '(no name)';
                 email.textContent = user.email || '(no email)';
@@ -60,12 +59,12 @@ var showDetails = function (userHeader, detailsBlock, userUrl) {
 }
 
 let renderUsers = function (users) {
-    var template = document.querySelector('#user_tmp');
+    let template = document.querySelector('#user_tmp');
     users.forEach((user) => {
-        var userBlock = document.importNode(template.content, true);
-        var userHeader = userBlock.querySelector('.user');
-        var userDetail = userBlock.querySelector('.user-detailed');
-        var login = userHeader.querySelector('a');
+        let userBlock = document.importNode(template.content, true);
+        let userHeader = userBlock.querySelector('.user');
+        let userDetail = userBlock.querySelector('.user-detailed');
+        let login = userHeader.querySelector('a');
 
         userHeader.querySelector('img').setAttribute('src', user.avatar_url);
         login.setAttribute('href', user.html_url);
@@ -74,7 +73,7 @@ let renderUsers = function (users) {
         table.appendChild(userBlock);
 
         userHeader.onclick = function () {
-            showDetails(userHeader, userDetail, USER_URL + user.login);
+            showDetails(userHeader, userDetail, `${USERS_URL}/${user.login}`);
         };
     });
 }
@@ -83,7 +82,7 @@ let getUsers = function () {
     let since = 0;
 
     return function () {
-        getUser(USERS_URL + since)
+        getUser(USERS_URL, `?since=${since}`)
             .then(
                 response => renderUsers(response),
                 error => alert(`Rejected: ${error}`),
