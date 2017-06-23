@@ -1,0 +1,37 @@
+img{
+    max-width:30px;
+}
+
+.user-selected {
+    background-color: #e6f5e2;
+}
+
+.table-condensed>tbody>tr>td {
+    height: 40px;
+    line-height: 30px;
+}
+
+.table-condensed>tbody>tr:nth-child(2n+1):hover {
+    background-color: #e6f5e2;
+    cursor: pointer;
+}
+
+.links a {
+    display: block;
+}
+
+.btn {
+    margin: 40px auto;
+}
+
+.disabled   {
+    pointer-events: none;
+}
+.row {
+    border-bottom: 1px solid #eee;
+    line-height: 40px;
+}
+
+.row li a {
+    height: 25px;
+}

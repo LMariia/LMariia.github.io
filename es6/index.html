@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="styles.css" rel="stylesheet">
+
+    <title>Users</title>
+</head>
+<body>
+    <div class="container" id="table">
+        <div class="row">
+            <div class="col-xs-4">Avatar</div>
+            <div class="col-xs-3">Login</div>
+            <div class="col-xs-5">isAdmin</div>
+        </div>
+        <template id="user_tmp">
+            <div class="row user">
+                <div class="col-xs-4">
+                    <img src="" alt="">
+                </div>
+                <div class="col-xs-3">
+                    <a id="link" href=""></a>
+                </div>
+                <div class="col-xs-5">
+                    <span id="span"></span>
+                </div>
+            </div>
+            <div class="row user-detailed hide">
+                <div class="col-xs-4 cell"></div>
+                <div class="col-xs-3 cell"></div>
+                <div class="col-xs-5 cell links">
+                    <ul>
+                        <li><a href=""> Followers </a></li>
+                        <li><a href=""> Followings </a></li>
+                        <li><a href=""> Starred </a></li>
+                        <li><a href=""> Subscriptions </a></li>
+                        <li><a href=""> Organizations </a></li>
+                        <li><a href=""> Repos </a></li>
+                    </ul>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div class="row">
+        <button type="button" class="btn btn-success center-block" onclick="loadUsers()">Load More</button>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
