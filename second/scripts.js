@@ -40,45 +40,45 @@ $(document).ready(function () {
         };
     }
 
-    var showDetails = function (userBlock) {
-        var detailsBlock = $(userBlock).next();
-        var userUrl = USER_URL + $(userBlock).find('a').text();
-        var name = $(detailsBlock.find('.cell'))[0];
-        var email = $(detailsBlock.find('.cell'))[1];
+    var showDetails = function (userHeader, detailsBlock, url) {
+        var name = detailsBlock.find('.cell').eq(0);
+        var email = detailsBlock.find('.cell').eq(1);
         var links = detailsBlock.find('li a');
 
-        $(userBlock).toggleClass('user-selected');
+        userHeader.toggleClass('user-selected');
         detailsBlock.collapse('toggle');
-        if (name.innerHTML === '') {
-            $(userBlock).addClass('disabled');
-            getUser(userUrl, function (user) {
-                $(userBlock).removeClass('disabled');
-                $(name).text(user.name || '(no name)');
-                $(email).text(user.email || '(no email)');
-                for (i = 0; i < LINK_LIST.length; i++) {
-                    $(links[i]).attr('href', user[LINK_LIST[i]]);
-                }
+        if (!name.html()) {
+            userHeader.addClass('disabled');
+            getUser(url, function (user) {
+                userHeader.removeClass('disabled');
+                name.text(user.name || '(no name)');
+                email.text(user.email || '(no email)');
+                LINK_LIST.forEach(function (link, i) {
+                    links.eq(i).attr('href', user[link]);
+                });
             });
         }
     }
 
     var renderUsers = function (users) {
-        var template = $('#user_tmp')[0];
-        var avatar = $(template.content.querySelector('.user img'));
-        var login = $(template.content.querySelector('.user a'));
-        var isAdmin = $(template.content.querySelector('.user span'));
+        var template = $($('#user_tmp').get(0).content);
 
         users.forEach(function (user) {
-            avatar.attr('src', user.avatar_url);
-            login.text(user.login).attr('href', user.html_url);
-            isAdmin.text(user.site_admin);
-            table.append($(template).html());
-        });
-        $('.user').on('click', function () {
-            showDetails(this);
-        });
-        $('.user a').on('click', function (event) {
-            event.stopPropagation();
+            var userBlock = template.clone();
+            var userHeader = userBlock.find('.user');
+            var userDetail = userBlock.find('.user-detailed')
+
+            userHeader.find('img').attr('src', user.avatar_url);
+            userHeader.find('a').text(user.login).attr('href', user.html_url);
+            userHeader.find('span').text(user.site_admin);
+            table.append(userBlock);
+
+            userHeader.on('click', function () {
+                showDetails(userHeader, userDetail, USER_URL + user.login);
+            });
+            userHeader.find('a').on('click', function (event) {
+                event.stopPropagation();
+            });
         });
     }
 
