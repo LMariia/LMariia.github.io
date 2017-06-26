@@ -58,12 +58,18 @@ let showDetails = function (userHeader, detailsBlock, userUrl) {
     }
 }
 
+table.onclick = function (event) {
+    let target = event.target.closest('.user');
+    if (target.className.indexOf('user') > -1) {
+        showDetails(target, target.nextElementSibling, `${USERS_URL}/${target.querySelector('a').textContent}`);
+    }
+};
+
 let renderUsers = function (users) {
     let template = document.querySelector('#user_tmp');
     users.forEach((user) => {
         let userBlock = document.importNode(template.content, true);
         let userHeader = userBlock.querySelector('.user');
-        let userDetail = userBlock.querySelector('.user-detailed');
         let login = userHeader.querySelector('a');
 
         userHeader.querySelector('img').setAttribute('src', user.avatar_url);
@@ -71,10 +77,6 @@ let renderUsers = function (users) {
         login.textContent = user.login;
         userHeader.querySelector('span').textContent = user.site_admin;
         table.appendChild(userBlock);
-
-        userHeader.onclick = function () {
-            showDetails(userHeader, userDetail, `${USERS_URL}/${user.login}`);
-        };
     });
 }
 
@@ -90,8 +92,7 @@ let getUsers = function () {
 
         since += USER_PER_PAGE;
     };
-}
-
+};
 let loadUsers = getUsers();
 
 loadUsers();
